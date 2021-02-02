@@ -29,6 +29,10 @@ func RunBot(token string, timeout int, debug bool) {
 	updates, err := bot.GetUpdatesChan(updateConfig)
 
 	for update := range updates {
+		if update.Message == nil {
+			continue
+		}
+
 		var handler = GetHandler(update.Message.Text)
 		handler(bot, update)
 	}
