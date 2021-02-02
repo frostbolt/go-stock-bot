@@ -3,12 +3,12 @@ package bot
 import (
 	"fmt"
 
-	APISDK "github.com/frostbolt/go-stock-bot/api-sdk"
+	apisdk "github.com/frostbolt/go-stock-bot/apisdk"
 )
 
 // FormatTickerResults gets an APIResponse
 // and returns formatted string that is ready to be sent as a bots response
-func FormatTickerResults(tickerInfo APISDK.APIResponse) string {
+func FormatTickerResults(tickerInfo apisdk.APIResponse) string {
 	match := tickerInfo.QuoteSummary.Result[0]
 
 	graphEmoji := "📈"

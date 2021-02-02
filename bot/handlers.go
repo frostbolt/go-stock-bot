@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	APISDK "github.com/frostbolt/go-stock-bot/api-sdk"
+	apisdk "github.com/frostbolt/go-stock-bot/apisdk"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 
 	log "github.com/sirupsen/logrus"
@@ -27,7 +27,7 @@ func defaultHandler(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 		return
 	}
 
-	tickerInfo, err := APISDK.GetInfoOnTicker(strings.TrimPrefix(update.Message.Text, "$"))
+	tickerInfo, err := apisdk.GetInfoOnTicker(strings.TrimPrefix(update.Message.Text, "$"))
 	var response string
 	if err != nil {
 		response = "¯\\_(ツ)_/¯"
