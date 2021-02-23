@@ -20,22 +20,25 @@ var handlers = map[string]Command{
 }
 
 func defaultHandler(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
-	log.Printf("Default handler")
 	tickerRegex, _ := regexp.Compile("^\\$[A-Z\\-]{1,7}$")
-
 	if update.Message.Text[0] != '$' && !tickerRegex.Match([]byte(update.Message.Text)) {
 		return
 	}
 
-	tickerInfo, err := apisdk.GetInfoOnTicker(strings.TrimPrefix(update.Message.Text, "$"))
+	normalizedTicker := strings.TrimPrefix(update.Message.Text, "$")
+	log.Printf("Default handler, %s", normalizedTicker)
+
+	tickerInfo, err := apisdk.GetInfoOnTicker(normalizedTicker)
+
 	var response string
 	if err != nil {
 		response = "¯\\_(ツ)_/¯"
 	} else {
-		response = FormatTickerResults(tickerInfo)
+		response = apisdk.FormatTickerResults(tickerInfo)
 	}
 
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, response)
+
 	msg.ReplyToMessageID = update.Message.MessageID
 	msg.ParseMode = "Markdown"
 	bot.Send(msg)
@@ -57,8 +60,11 @@ func start(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 
 func info(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 	log.Printf("Info command")
+	msg := tgbotapi.NewMessage(
+		update.Message.Chat.ID,
+		"Author: @frostbolt \nRepo: https://github.com/frostbolt/go-stock-bot",
+	)
 
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Author: @frostbolt")
 	msg.ReplyToMessageID = update.Message.MessageID
 	msg.ParseMode = "Markdown"
 	bot.Send(msg)

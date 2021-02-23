@@ -1,0 +1,9 @@
+bot:
+  token: your_token_here
+  timeout: 60
+  debug: false
+redis:
+  addr: localhost:6379
+  password: ""
+  DB: 0
+  expiration: 30 # cache lifespan
