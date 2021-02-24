@@ -48,7 +48,7 @@ func GetInfoOnTicker(ticker string) (APIResponse, error) {
 	result := new(APIResponse)
 	err := makeAnAPICall(requestURL, result)
 
-	if result.QuoteSummary.Result == nil {
+	if err != nil || result.QuoteSummary.Result == nil {
 		return *result, errors.New("Invalid request")
 	}
 

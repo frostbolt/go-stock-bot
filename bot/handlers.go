@@ -30,15 +30,11 @@ func defaultHandler(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 
 	tickerInfo, err := apisdk.GetInfoOnTicker(normalizedTicker)
 
-	var response string
 	if err != nil {
-		response = "¯\\_(ツ)_/¯"
-	} else {
-		response = apisdk.FormatTickerResults(tickerInfo)
+		return
 	}
 
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, response)
-
+	msg := tgbotapi.NewMessage(update.Message.Chat.ID, apisdk.FormatTickerResults(tickerInfo))
 	msg.ReplyToMessageID = update.Message.MessageID
 	msg.ParseMode = "Markdown"
 	bot.Send(msg)
