@@ -1,10 +1,10 @@
 package bot
 
 import (
-	"regexp"
 	"strings"
 
 	apisdk "github.com/frostbolt/go-stock-bot/apisdk"
+	"github.com/frostbolt/go-stock-bot/formatters"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 
 	log "github.com/sirupsen/logrus"
@@ -14,16 +14,12 @@ import (
 type Command func(*tgbotapi.BotAPI, tgbotapi.Update)
 
 // Handlers is a map of custom bot commands
-var handlers = map[string]Command{
-	"/start": start,
-	"/info":  info,
+var Handlers = map[string]Command{
+	"start": start,
+	"info":  info,
 }
 
 func defaultHandler(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
-	tickerRegex, _ := regexp.Compile("^\\$[A-Z\\-]{1,7}$")
-	if update.Message.Text[0] != '$' && !tickerRegex.Match([]byte(update.Message.Text)) {
-		return
-	}
 
 	normalizedTicker := strings.TrimPrefix(update.Message.Text, "$")
 	log.Printf("Default handler, %s", normalizedTicker)
@@ -34,20 +30,10 @@ func defaultHandler(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 		return
 	}
 
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, apisdk.FormatTickerResults(tickerInfo))
+	msg := tgbotapi.NewMessage(update.Message.Chat.ID, formatters.FormatTickerResults(tickerInfo))
 	msg.ReplyToMessageID = update.Message.MessageID
 	msg.ParseMode = "Markdown"
 	bot.Send(msg)
-}
-
-// GetHandler returns a propper handler
-func GetHandler(command string) Command {
-	function, isDefined := handlers[command]
-	if !isDefined {
-		function = defaultHandler
-	}
-
-	return function
 }
 
 func start(bot *tgbotapi.BotAPI, update tgbotapi.Update) {

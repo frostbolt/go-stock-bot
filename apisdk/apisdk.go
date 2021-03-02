@@ -44,7 +44,7 @@ func makeAnAPICall(url string, target interface{}) error {
 
 // GetInfoOnTicker calls finance api and returns a decoded response object
 func GetInfoOnTicker(ticker string) (APIResponse, error) {
-	requestURL := fmt.Sprintf("https://query1.finance.yahoo.com/v11/finance/quoteSummary/%s?modules=price", ticker)
+	requestURL := fmt.Sprintf("https://query1.finance.yahoo.com/v11/finance/quoteSummary/%s?modules=price,summarydetail", ticker)
 	result := new(APIResponse)
 	err := makeAnAPICall(requestURL, result)
 
