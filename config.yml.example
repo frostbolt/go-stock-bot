@@ -3,7 +3,7 @@ bot:
   timeout: 60
   debug: false
 redis:
-  addr: localhost:6379
+  addr: redis:6379
   password: ""
   DB: 0
   expiration: 30 # cache lifespan
