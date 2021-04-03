@@ -43,12 +43,26 @@ func makeAnAPICall(url string, target interface{}) error {
 }
 
 // GetInfoOnTicker calls finance api and returns a decoded response object
-func GetInfoOnTicker(ticker string) (APIResponse, error) {
+func GetInfoOnTicker(ticker string) (QuoteAPIResponse, error) {
 	requestURL := fmt.Sprintf("https://query1.finance.yahoo.com/v11/finance/quoteSummary/%s?modules=price,summarydetail", ticker)
-	result := new(APIResponse)
+	result := new(QuoteAPIResponse)
 	err := makeAnAPICall(requestURL, result)
 
 	if err != nil || result.QuoteSummary.Result == nil {
+		return *result, errors.New("Invalid request")
+	}
+
+	return *result, err
+}
+
+// SearchQuotes gets a searchquery as a param and returns quotes list
+func SearchQuotes(query string) (SearchAPIResponse, error) {
+	requestURL := fmt.Sprintf("https://query1.finance.yahoo.com/v1/finance/search?q=%s&newsCount=0", query)
+	result := new(SearchAPIResponse)
+	err := makeAnAPICall(requestURL, result)
+
+	if err != nil || result.Quotes == nil || len(result.Quotes) == 0 {
+		log.Error(err)
 		return *result, errors.New("Invalid request")
 	}
 

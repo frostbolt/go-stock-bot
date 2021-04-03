@@ -22,17 +22,28 @@ var BotCommandRegex *regexp.Regexp
 // TickerRegex is meant to match the ticker
 var TickerRegex *regexp.Regexp
 
+var SearchQueryRegex *regexp.Regexp
+
 // InitializeBotVariables gets the bot instance and setups the propper environment
 func InitializeBotVariables(bot *tgbotapi.BotAPI) {
 	botName = fmt.Sprintf("@%s", bot.Self.UserName)
 	BotCommandRegex = regexp.MustCompile(fmt.Sprintf("^/(?P<command>[a-zA-Z]+)(?P<botname>%s)?$", botName))
-	TickerRegex = regexp.MustCompile("^\\$[A-Z\\-]{1,7}$")
+	TickerRegex = regexp.MustCompile("^\\$[a-zA-Z\\.\\-\\^\\=]{1,7}$")
+	SearchQueryRegex = regexp.MustCompile("^[a-zA-Z]+[a-zA-Z\\s\\-\\.\\^\\=\\$]+$")
 }
 
-// CommandValidator returns validated command and the flag that indicates whether the validation was successful
-func CommandValidator(update *tgbotapi.Update) (string, bool) {
+// GetHandler returns a propper handler and the flag which shows whether the handler is defined
+func GetHandler(update *tgbotapi.Update) (Command, bool) {
+	if update.InlineQuery != nil && update.InlineQuery.Query != "" {
+		return inlineQueryHandler, true
+	}
+
 	if update.Message == nil || update.Message.Text == "" {
-		return "", false
+		return nil, false
+	}
+
+	if update.Message.Text[0] == '$' && TickerRegex.Match([]byte(update.Message.Text)) {
+		return defaultHandler, true
 	}
 
 	submatch := BotCommandRegex.FindStringSubmatch(update.Message.Text)
@@ -41,31 +52,16 @@ func CommandValidator(update *tgbotapi.Update) (string, bool) {
 		match[BotCommandRegex.SubexpNames()[k]] = v
 	}
 
-	if update.Message.Text[0] == '$' && !TickerRegex.Match([]byte(update.Message.Text)) {
-		return "defaultHandler", true
-	}
-
 	command, isCommandDefined := match["command"]
 	botUserName, _ := match["botname"]
-	log.Println(match, GetBotName(), botUserName == GetBotName())
-
-	if isCommandDefined && (update.Message.Chat.Type == "private" || botUserName == GetBotName()) {
-		return command, true
-	}
-
-	return "", false
-}
-
-// GetHandler returns a propper handler and the flag which shows whether the handler is correct
-func GetHandler(update *tgbotapi.Update) (Command, bool) {
-	command, isValidationSuccessful := CommandValidator(update)
 
 	function, isDefined := Handlers[command]
-	if !isDefined {
-		function = defaultHandler
+
+	if isCommandDefined && (update.Message.Chat.Type == "private" || botUserName == GetBotName()) {
+		return function, isDefined
 	}
 
-	return function, isValidationSuccessful
+	return nil, false
 }
 
 // RunBot launches the bot updates listener

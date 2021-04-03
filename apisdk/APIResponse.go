@@ -1,7 +1,7 @@
 package apisdk
 
-// APIResponse describes the respose from yahoo finance api
-type APIResponse struct {
+// QuoteAPIResponse describes the respose from yahoo finance api `quoteSummary` method
+type QuoteAPIResponse struct {
 	QuoteSummary struct {
 		Result []struct {
 			SummaryDetail struct {
@@ -296,4 +296,56 @@ type APIResponse struct {
 		} `json:"result"`
 		Error interface{} `json:"error"`
 	} `json:"quoteSummary"`
+}
+
+// SearchAPIResponse describes the response from yahoo finance api `search` method
+type SearchAPIResponse struct {
+	Explains []interface{} `json:"explains"`
+	Count    int           `json:"count"`
+	Quotes   []struct {
+		Exchange       string  `json:"exchange,omitempty"`
+		Shortname      string  `json:"shortname,omitempty"`
+		QuoteType      string  `json:"quoteType,omitempty"`
+		Symbol         string  `json:"symbol,omitempty"`
+		Index          string  `json:"index"`
+		Score          float64 `json:"score,omitempty"`
+		TypeDisp       string  `json:"typeDisp,omitempty"`
+		IsYahooFinance bool    `json:"isYahooFinance"`
+		Longname       string  `json:"longname,omitempty"`
+		Name           string  `json:"name,omitempty"`
+		Permalink      string  `json:"permalink,omitempty"`
+	} `json:"quotes"`
+	News []struct {
+		UUID                string `json:"uuid"`
+		Title               string `json:"title"`
+		Publisher           string `json:"publisher"`
+		Link                string `json:"link"`
+		ProviderPublishTime int    `json:"providerPublishTime"`
+		Type                string `json:"type"`
+	} `json:"news"`
+	Nav []struct {
+		NavName string `json:"navName"`
+		NavURL  string `json:"navUrl"`
+	} `json:"nav"`
+	Lists []struct {
+		Slug          string  `json:"slug,omitempty"`
+		Name          string  `json:"name,omitempty"`
+		Index         string  `json:"index"`
+		Score         float64 `json:"score"`
+		Type          string  `json:"type"`
+		BrandSlug     string  `json:"brandSlug,omitempty"`
+		PfID          string  `json:"pfId,omitempty"`
+		ID            string  `json:"id,omitempty"`
+		Title         string  `json:"title,omitempty"`
+		CanonicalName string  `json:"canonicalName,omitempty"`
+	} `json:"lists"`
+	ResearchReports                []interface{} `json:"researchReports"`
+	TotalTime                      int           `json:"totalTime"`
+	TimeTakenForQuotes             int           `json:"timeTakenForQuotes"`
+	TimeTakenForNews               int           `json:"timeTakenForNews"`
+	TimeTakenForAlgowatchlist      int           `json:"timeTakenForAlgowatchlist"`
+	TimeTakenForPredefinedScreener int           `json:"timeTakenForPredefinedScreener"`
+	TimeTakenForCrunchbase         int           `json:"timeTakenForCrunchbase"`
+	TimeTakenForNav                int           `json:"timeTakenForNav"`
+	TimeTakenForResearchReports    int           `json:"timeTakenForResearchReports"`
 }

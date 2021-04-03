@@ -6,6 +6,7 @@ require (
 	github.com/go-redis/redis/v8 v8.6.0
 	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
 	github.com/golang/protobuf v1.4.3 // indirect
+	github.com/prometheus/common v0.4.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/viper v1.7.1
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect

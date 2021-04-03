@@ -24,7 +24,7 @@ func FormatCurrency(currencyCode string, amount float64) string {
 
 // FormatTickerResults gets an APIResponse
 // and returns formatted string that is ready to be sent as a bots response
-func FormatTickerResults(tickerInfo apisdk.APIResponse) string {
+func FormatTickerResults(tickerInfo apisdk.QuoteAPIResponse) string {
 	match := tickerInfo.QuoteSummary.Result[0]
 
 	if match.Price.RegularMarketPrice.Fmt == "" {
